@@ -1,6 +1,8 @@
 # dockerhub-symfony
 
-[![](https://dockerbuildbadges.quelltext.eu/status.svg?organization=borodiliz&repository=dockerhub-symfony)](https://hub.docker.com/r/borodiliz/dockerhub-symfony/builds/)  
-`https://dockerbuildbadges.quelltext.eu/status.svg?organization=borodiliz&repository=dockerhub-symfony`
+![](https://img.shields.io/docker/automated/borodiliz/symfony.svg?style=flat)
+
+![](https://img.shields.io/docker/build/borodiliz/symfony.svg?style=flat)
+
 
 The repository is maintained at <https://github.com/borodiliz/dockerhub-symfony/>
