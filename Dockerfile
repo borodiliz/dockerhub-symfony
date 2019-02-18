@@ -14,7 +14,7 @@ RUN add-apt-repository ppa:ondrej/php
 
 RUN apt-get update && \
     apt-get install -y php7.3 php7.3-mongodb php7.3-fpm php7.3-mysql php7.3-mbstring php7.3-cgi \
-        php7.3-curl php7.3-dev php7.3-gd php7.3-imap php7.3-intl \
+        php7.3-curl php7.3-dev php7.3-gd php7.3-imap php7.3-intl php7.3-zmq php7.3-http \
         php7.3-pspell php7.3-ps  php7.3-recode  php7.3-sqlite3 php7.3-tidy php7.3-zip php7.3-xdebug \
         php7.3-xmlrpc php7.3-xsl php7.3-mysql libssl-dev php7.3-dev pkg-config \
         mysql-client nginx curl supervisor git unzip nmap sudo apt-utils vim acl inetutils-ping && \
