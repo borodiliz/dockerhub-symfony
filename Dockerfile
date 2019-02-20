@@ -56,7 +56,8 @@ RUN apt-get install -y -q \
     && apt-get -y autoclean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g bower grunt npm-check-updates karma
+RUN npm install -g bower grunt npm-check-updates karma pm2
+
 ################ Section Use NodeJS ################
 
 ################ Section Mongo Tools 4.0 ################
@@ -70,10 +71,20 @@ RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer
 ################ Install composer ################
 
+################ Yarn ################
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+
+RUN sudo apt-get update && sudo apt-get install yarn
+################ Yarn ################
+
 ################ Disable Xdebug by default so we improve performance ################
 RUN sudo phpdismod xdebug && service php7.3-fpm restart
 
 ENV TERM xterm
+
+ENV SSH_AUTHORIZED_KEY=$SSH_AUTHORIZED_KEY
+
 
 VOLUME  ["/var/www"]
 
