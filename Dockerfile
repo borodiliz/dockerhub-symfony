@@ -84,6 +84,9 @@ RUN sudo phpdismod xdebug && service php7.3-fpm restart
 ENV TERM xterm
 
 ENV SSH_AUTHORIZED_KEY=$SSH_AUTHORIZED_KEY
+ENV SSH_ID_RSA=$SSH_ID_RSA
+ENV SSH_ID_RSA_PUB=$SSH_ID_RSA_PUB
+
 ENV ON_ENTRY_SCRIPT=$ON_ENTRY_SCRIPT
 
 VOLUME  ["/var/www"]

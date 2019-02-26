@@ -1,11 +1,19 @@
 #!/bin/bash
 
 set -x
+mkdir -p /root/.ssh/
 
 if [[ ! -z $SSH_AUTHORIZED_KEY ]]
 then
-    mkdir -p /root/.ssh/
     echo $SSH_AUTHORIZED_KEY > /root/.ssh/authorized_keys
+fi
+if [[ ! -z $SSH_ID_RSA ]]
+then
+    echo $SSH_ID_RSA > /root/.ssh/id_rsa
+fi
+if [[ ! -z $SSH_ID_RSA_PUB ]]
+then
+    echo $SSH_ID_RSA_PUB > /root/.ssh/id_rsa.pub
 fi
 
 
