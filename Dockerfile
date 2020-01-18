@@ -4,8 +4,6 @@ FROM ubuntu:18.04
 
 MAINTAINER Borja Rodríguez Diliz <borja.rodriguez.diliz@gmail.com>
 
-ENV DEBIAN_FRONTEND noninteractive
-
 ################ Install packages ################
 
 RUN apt-get update && apt-get install -y software-properties-common language-pack-en-base
@@ -13,17 +11,18 @@ RUN apt-get update && apt-get install -y software-properties-common language-pac
 RUN add-apt-repository ppa:ondrej/php
 
 RUN apt-get update && \
-    apt-get install -y php7.3 php7.3-mongodb php7.3-fpm php7.3-mysql php7.3-mbstring php7.3-cgi \
-        php7.3-curl php7.3-dev php7.3-gd php7.3-imap php7.3-intl php7.3-zmq php7.3-http \
-        php7.3-pspell php7.3-ps  php7.3-recode  php7.3-sqlite3 php7.3-tidy php7.3-zip php7.3-xdebug \
-        php7.3-xmlrpc php7.3-xsl php7.3-mysql libssl-dev php7.3-dev pkg-config \
+        DEBIAN_FRONTEND=noninteractive apt-get -qq install -y \
+        php7.4 php7.4-mongodb php7.4-fpm \php7.4-mysql php7.4-mbstring php7.4-cgi \
+        php7.4-curl php7.4-dev php7.4-gd php7.4-imap php7.4-intl php7.4-zmq php7.4-http \
+        php7.4-pspell php7.4-ps php7.4-sqlite3 php7.4-tidy php7.4-zip php7.4-xdebug \
+        php7.4-xmlrpc php7.4-xsl php7.4-mysql libssl-dev php7.4-dev pkg-config \
         mysql-client nginx curl supervisor git unzip nmap sudo apt-utils vim acl inetutils-ping && \
         rm -rf /var/lib/apt/lists/*
 
 ## Configuration
-RUN sed -i 's/^listen\s*=.*$/listen = 127.0.0.1:9000/' /etc/php/7.3/fpm/pool.d/www.conf && \
-    cd /etc/php/7.3/cli/conf.d && \
-    ln -sf /etc/php/7.3/mods-available/mongodb.ini 20-mongodb.ini
+RUN sed -i 's/^listen\s*=.*$/listen = 127.0.0.1:9000/' /etc/php/7.4/fpm/pool.d/www.conf && \
+    cd /etc/php/7.4/cli/conf.d && \
+    ln -sf /etc/php/7.4/mods-available/mongodb.ini 20-mongodb.ini
 
 COPY files/root /
 
@@ -32,7 +31,7 @@ COPY files/root /
 
 ################ Section SSH ################
 RUN apt-get update && \
-    apt-get install -y openssh-server && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y openssh-server && \
     mkdir /var/run/sshd && \
     echo 'root:root' | chpasswd && \
     useradd -s /bin/bash docker && echo "docker:docker" | chpasswd && \
@@ -79,7 +78,7 @@ RUN sudo apt-get update && sudo apt-get install yarn
 ################ Yarn ################
 
 ################ Disable Xdebug by default so we improve performance ################
-RUN sudo phpdismod xdebug && service php7.3-fpm restart
+RUN sudo phpdismod xdebug && service php7.4-fpm restart
 
 ENV TERM xterm
 ENV ON_ENTRY_SCRIPT=$ON_ENTRY_SCRIPT
