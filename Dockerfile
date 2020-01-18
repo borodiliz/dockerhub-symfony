@@ -47,7 +47,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 ################ Section SSH ################
 
 ################ Section Use NodeJS ################
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 
 # nodejs includes matching npm as well
 RUN apt-get install -y -q \
@@ -59,11 +59,11 @@ RUN npm install -g bower grunt npm-check-updates karma pm2
 
 ################ Section Use NodeJS ################
 
-################ Section Mongo Tools 4.0 ################
-RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
-RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+################ Section Mongo Tools ################
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
 RUN apt-get update && apt-get install -y mongodb-org-tools mongodb-org-shell
-################ Section Mongo Tools 4.0 ################
+################ Section Mongo Tools ################
 
 ################ Install composer ################
 RUN curl -sS https://getcomposer.org/installer | php && \
