@@ -1,6 +1,6 @@
 # Based on https://github.com/JangChun/docker-lemp
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 MAINTAINER Borja Rodríguez Diliz <borja.rodriguez.diliz@gmail.com>
 
@@ -8,21 +8,23 @@ MAINTAINER Borja Rodríguez Diliz <borja.rodriguez.diliz@gmail.com>
 
 RUN apt-get update && apt-get install -y software-properties-common language-pack-en-base
 
+RUN mkdir -p /run/php/
+
 RUN add-apt-repository ppa:ondrej/php
 
 RUN apt-get update && \
         DEBIAN_FRONTEND=noninteractive apt-get -qq install -y \
-        php7.4 php7.4-mongodb php7.4-fpm \php7.4-mysql php7.4-mbstring php7.4-cgi \
-        php7.4-curl php7.4-dev php7.4-gd php7.4-imap php7.4-intl php7.4-zmq php7.4-http \
-        php7.4-pspell php7.4-ps php7.4-sqlite3 php7.4-tidy php7.4-zip php7.4-xdebug \
-        php7.4-xmlrpc php7.4-xsl php7.4-mysql libssl-dev php7.4-dev php-imagick pkg-config \
+        php8.0 php8.0-mongodb php8.0-fpm \php8.0-mysql php8.0-mbstring php8.0-cgi \
+        php8.0-curl php8.0-dev php8.0-gd php8.0-imap php8.0-intl php8.0-zmq \
+        php8.0-pspell php8.0-ps php8.0-sqlite3 php8.0-tidy php8.0-zip php8.0-xdebug \
+        php8.0-xmlrpc php8.0-xsl php8.0-mysql libssl-dev php8.0-dev php-imagick pkg-config \
         mysql-client nginx curl supervisor git unzip nmap sudo apt-utils vim acl inetutils-ping && \
         rm -rf /var/lib/apt/lists/*
 
 ## Configuration
-RUN sed -i 's/^listen\s*=.*$/listen = 127.0.0.1:9000/' /etc/php/7.4/fpm/pool.d/www.conf && \
-    cd /etc/php/7.4/cli/conf.d && \
-    ln -sf /etc/php/7.4/mods-available/mongodb.ini 20-mongodb.ini
+RUN sed -i 's/^listen\s*=.*$/listen = 127.0.0.1:9000/' /etc/php/8.0/fpm/pool.d/www.conf && \
+    cd /etc/php/8.0/cli/conf.d && \
+    ln -sf /etc/php/8.0/mods-available/mongodb.ini 20-mongodb.ini
 
 COPY files/root /
 
@@ -47,38 +49,45 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 ################ Section SSH ################
 
 ################ Section Use NodeJS ################
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+# nvm environment variables
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 14.15.1
 
-# nodejs includes matching npm as well
-RUN apt-get install -y -q \
-    nodejs \
-    && apt-get -y autoclean \
-    && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p $NVM_DIR
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+#RUN export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")" && . "$NVM_DIR/nvm.sh" && nvm install v14.15.1
+# install node and npm
+RUN . $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && nvm use default
 
+# add node and npm to path so the commands are available
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+
+# confirm installation
+RUN node -v
+RUN npm -v
 RUN npm install -g bower grunt npm-check-updates karma pm2
 
 ################ Section Use NodeJS ################
 
 ################ Section Mongo Tools ################
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
-RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 RUN apt-get update && apt-get install -y mongodb-org-tools mongodb-org-shell
 ################ Section Mongo Tools ################
 
 ################ Install composer ################
-RUN curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
 ################ Install composer ################
 
-################ Yarn ################
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
-RUN sudo apt-get update && sudo apt-get install yarn
-################ Yarn ################
-
 ################ Disable Xdebug by default so we improve performance ################
-RUN sudo phpdismod xdebug && service php7.4-fpm restart
+RUN sudo phpdismod xdebug && service php8.0-fpm restart
 
 ENV TERM xterm
 ENV ON_ENTRY_SCRIPT=$ON_ENTRY_SCRIPT
