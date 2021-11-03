@@ -16,7 +16,7 @@ RUN apt-get update && \
         DEBIAN_FRONTEND=noninteractive apt-get -qq install -y \
         php8.0 php8.0-mongodb php8.0-fpm \php8.0-mysql php8.0-mbstring php8.0-cgi \
         php8.0-curl php8.0-dev php8.0-gd php8.0-imap php8.0-intl php8.0-zmq \
-        php8.0-pspell php8.0-ps php8.0-sqlite3 php8.0-tidy php8.0-zip php8.0-xdebug \
+        php8.0-pspell php8.0-sqlite3 php8.0-tidy php8.0-zip php8.0-xdebug \
         php8.0-xmlrpc php8.0-xsl php8.0-mysql libssl-dev php8.0-dev php-imagick pkg-config \
         mysql-client nginx curl supervisor git unzip nmap sudo apt-utils vim acl inetutils-ping && \
         rm -rf /var/lib/apt/lists/*
