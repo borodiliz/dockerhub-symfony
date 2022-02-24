@@ -14,11 +14,11 @@ RUN add-apt-repository ppa:ondrej/php
 
 RUN apt-get update && \
         DEBIAN_FRONTEND=noninteractive apt-get -qq install -y \
-        php8.0 php8.0-mongodb php8.0-fpm \php8.0-mysql php8.0-mbstring php8.0-cgi \
+        php8.0 php8.0-mongodb php8.0-fpm php8.0-mysql php8.0-mbstring php8.0-cgi \
         php8.0-curl php8.0-dev php8.0-gd php8.0-imap php8.0-intl php8.0-zmq \
         php8.0-pspell php8.0-sqlite3 php8.0-tidy php8.0-zip php8.0-xdebug \
         php8.0-xmlrpc php8.0-xsl php8.0-mysql libssl-dev php8.0-dev php-imagick pkg-config \
-        mysql-client nginx curl supervisor git unzip nmap sudo apt-utils vim acl inetutils-ping && \
+        nginx curl supervisor git unzip nmap sudo apt-utils vim acl inetutils-ping nano && \
         rm -rf /var/lib/apt/lists/*
 
 ## Configuration
@@ -66,11 +66,15 @@ RUN . $NVM_DIR/nvm.sh \
 ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
+RUN cp /root/.bashrc /home/docker/.bashrc
+RUN cp /root/.profile /home/docker/.profile
+RUN chown docker:docker /home/docker/.bashrc /home/docker/.profile
+
 # confirm installation
 RUN node -v
 RUN npm -v
 RUN npm install -g bower grunt npm-check-updates karma pm2
-
+RUN npm install -g -unsafe-perm node-sass
 ################ Section Use NodeJS ################
 
 ################ Section Mongo Tools ################
@@ -93,6 +97,9 @@ ENV TERM xterm
 ENV ON_ENTRY_SCRIPT=$ON_ENTRY_SCRIPT
 
 RUN sudo mkdir -p /root/.ssh/
+RUN sudo chown -R docker:docker /var/www
+RUN sudo rm -R /var/www/html
+RUN sudo update-alternatives --set php /usr/bin/php8.0
 
 VOLUME  ["/var/www"]
 VOLUME  ["/root/.ssh/"]
@@ -100,4 +107,3 @@ VOLUME  ["/root/.ssh/"]
 EXPOSE 80 22
 
 ENTRYPOINT ["/entrypoint.sh"]
-
