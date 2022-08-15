@@ -73,9 +73,12 @@ RUN npm install -g bower grunt npm-check-updates karma pm2
 
 ################ Section Mongo Tools ################
 # Workaround until mongodb supports ubuntu 22 https://www.mongodb.com/community/forums/t/installing-mongodb-over-ubuntu-22-04/159931/4
-RUN echo "deb http://security.ubuntu.com/ubuntu impish-security main" | sudo tee /etc/apt/sources.list.d/impish-security.list
-RUN apt update
-RUN apt install -y libssl1.1
+#RUN echo "deb http://security.ubuntu.com/ubuntu jammy-security main" | sudo tee /etc/apt/sources.list.d/jammy-security.list
+#RUN apt update
+#RUN apt install -y libssl3
+RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+RUN dpkg -i ./libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+RUN rm -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
 RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 RUN apt-get update && apt-get install -y mongodb-org-tools mongodb-org-shell
@@ -89,7 +92,7 @@ RUN mv composer.phar /usr/local/bin/composer
 ################ Install composer ################
 
 ################ Disable Xdebug by default so we improve performance ################
-RUN sudo phpdismod xdebug && service php8.1-fpm restart
+#RUN sudo phpdismod xdebug && service php8.1-fpm restart
 
 ENV TERM xterm
 ENV ON_ENTRY_SCRIPT=$ON_ENTRY_SCRIPT

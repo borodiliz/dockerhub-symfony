@@ -16,7 +16,7 @@ server {
         include fastcgi.conf;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include /var/www/config/nginx-env/prod;
-	include includes/cors-support;
+	    #include includes/cors-support;
     }
 
     location ~ \.php$ {

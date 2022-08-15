@@ -1,0 +1,73 @@
+version: '3.8'
+services:
+    mysql:
+        container_name: memind_mysql
+        image: mysql:8.0
+        hostname: memind_mysql
+        command: --default-authentication-plugin=mysql_native_password --sql_mode=""
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_DATABASE: "memind_dev"
+        #restart: always
+        volumes:
+            - ../persistent-data/mysql:/var/lib/mysql
+        networks:
+            - net
+
+    mongo:
+      container_name: memind_mongo
+      image: mongo:4.4
+      hostname: memind_mongo
+      ports:
+          - ${MONGO_PORT}:27017
+      #restart: always
+      volumes:
+          #- ../persistent-data/mongo/db:/data/db
+          - ../persistent-data/mongo/configdb:/data/configdb
+          - mongo_db:/data/db
+      networks:
+          - net
+
+    php-fpm:
+        container_name: memind_php-fpm
+        build: .
+        hostname: memind_php-fpm
+        working_dir: /var/www
+        environment:
+            - PHPSTAN_PRO_WEB_PORT=11111
+        ports:
+            - ${FRONTEND_HTTP_PORT}:80
+            - ${FRONTEND_SSH_PORT}:22
+            - 11111:11111
+            - 4200:4200
+        depends_on:
+            - mysql
+            - mongo
+        #restart: always
+        volumes:
+            - ../../code:/var/www
+        networks:
+            - net
+
+    mail:
+        container_name: memind_mail
+        hostname: memind_mail
+        image: schickling/mailcatcher
+        ports:
+            - 1025:1025
+            - 1080:1080
+        environment:
+            - VIRTUAL_HOST=localhost
+            - VIRTUAL_PORT=1080
+        #restart: always
+        networks:
+            - net
+
+volumes:
+    mongo_db:
+
+networks:
+    net:
+        name: memind_net
