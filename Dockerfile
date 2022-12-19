@@ -17,7 +17,7 @@ RUN apt update && \
         php8.1 php8.1-mongodb php8.1-fpm \php8.1-mysql php8.1-mbstring php8.1-cgi \
         php8.1-curl php8.1-dev php8.1-gd php8.1-imap php8.1-intl php8.1-zmq \
         php8.1-pspell php8.1-sqlite3 php8.1-tidy php8.1-zip php8.1-xdebug \
-        php8.1-xmlrpc php8.1-xsl php8.1-mysql libssl-dev php8.1-dev php-imagick pkg-config \
+        php8.1-xmlrpc php8.1-xsl php8.1-mysql libssl-dev php8.1-dev php8.1-imagick pkg-config \
         mysql-client nginx curl supervisor git unzip nmap sudo apt-utils vim acl inetutils-ping nano && \
         rm -rf /var/lib/apt/lists/*
 
@@ -72,13 +72,9 @@ RUN npm install -g bower grunt npm-check-updates karma pm2
 ################ Section Use NodeJS ################
 
 ################ Section Mongo Tools ################
-# Workaround until mongodb supports ubuntu 22 https://www.mongodb.com/community/forums/t/installing-mongodb-over-ubuntu-22-04/159931/4
-RUN echo "deb http://security.ubuntu.com/ubuntu impish-security main" | sudo tee /etc/apt/sources.list.d/impish-security.list
-RUN apt update
-RUN apt install -y libssl1.1
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-RUN echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-RUN apt-get update && apt-get install -y mongodb-org-tools mongodb-org-shell
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+#RUN apt-get update && apt-get install -y mongodb-org-tools mongodb-mongosh
 ################ Section Mongo Tools ################
 
 ################ Install composer ################
