@@ -31,4 +31,6 @@ jobs:
           push: true
           tags: borodiliz/symfony:latest,borodiliz/symfony:php8.1
           platforms: linux/amd64,linux/arm64/v8
+          cache-from: type=registry,ref=borodiliz/symfony:latest
+          cache-to: type=inline
 
