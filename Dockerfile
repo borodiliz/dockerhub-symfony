@@ -74,7 +74,7 @@ RUN npm install -g bower grunt npm-check-updates karma pm2
 ################ Section Mongo Tools ################
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
 RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
-#RUN apt-get update && apt-get install -y mongodb-org-tools mongodb-mongosh
+RUN apt-get update && apt-get install -y mongodb-org-tools mongodb-mongosh
 ################ Section Mongo Tools ################
 
 ################ Install composer ################
